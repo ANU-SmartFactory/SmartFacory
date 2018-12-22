@@ -3,12 +3,12 @@
 
 main - UI
 
-socket_TCPIP_server
-comm_line : socket_TCPIP_server
-comm_trailer : socket_TCPIP_server
+class socket_TCPIP_server
+class comm_line : socket_TCPIP_server
+class comm_trailer : socket_TCPIP_server
   
   
-main_flow - thread
+class main_flow - thread
   eLineState line_state; ( idle, execute, alarm_stop, resume )
   
   sequence(){
@@ -47,7 +47,7 @@ main_flow - thread
   resume()
   
   
-machineIF
+class machineIF
   enum eMachineState{
     normal = 0,
     abnormal = 1,
@@ -58,7 +58,7 @@ machineIF
   eMachineState get_machine_state( ref double _data )       //( normal, abnormal )
   bool get_sensor_detect()
 	
-machine_input : machineIF
+class machine_input : machineIF
   변수 기준값;
   on_receive()
   get_machine_state(){
@@ -67,25 +67,25 @@ machine_input : machineIF
     }
   }
   
-machine_manufacture : machineIF
+class machine_manufacture : machineIF
   변수 기준값;
   on_receive()
   
-machine_assemble : machineIF
+class machine_assemble : machineIF
   변수 기준값;
   on_receive()
   
-machine_test : machineIF
+class machine_test : machineIF
   변수 기준값;
   on_receive()
   
-machine_output : machineIF
+class machine_output : machineIF
   변수 기준값;
   on_receive()
   
     
 	
-trailer
+class trailer
   on_receive()
   start()
   stop()
@@ -109,19 +109,19 @@ trailer
   
   
  -- arduino trailer --
-socket_TCPIP_client
-comm_mes : socket_TCPIP_client
+class socket_TCPIP_client
+class comm_mes : socket_TCPIP_client
   on_receive()
   send_data( string _data )
 
-main_flow
+class main_flow
   sequence()
 
-motor
+class motor
   move()
   stop()
 
-load_cell
+class load_cell
   get_weight()
 
   
