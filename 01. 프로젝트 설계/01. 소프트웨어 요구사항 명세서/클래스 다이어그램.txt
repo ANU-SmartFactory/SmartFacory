@@ -4,8 +4,16 @@
 main - UI
 
 class socket_TCPIP_server
+  server_start( int _port );
+  server_stop();
+  send_data( string _send_data );
+  on_receive( string _recv_data );
+
 class comm_line : socket_TCPIP_server
 class comm_trailer : socket_TCPIP_server
+
+
+class DB ( DB 연결 및 테이블 조회, 삽입 관련 처리 클래스 )
   
   
 class main_flow - thread
@@ -85,10 +93,18 @@ class machine_output : machineIF
   
     
 	
-class trailer
+class trailer ( trailer 관련 정보 처리 클래스 )
   on_receive()
-  start()
+  start() -> 아두이노에게 이동하라는 명령을 TCPIP 통해 전송 함.
+  {
+    comm_trailer.send_data( "MOVE" );
+  }
+  
   stop()
+  {
+    comm_trailer.send_data( "STOP" );
+  }
+  
   go_back()
   int get_weight()
   
