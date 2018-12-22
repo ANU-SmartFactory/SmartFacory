@@ -1,7 +1,6 @@
-통신 Protocol
 
 
-main - UI
+  -- main - UI --
 
 class socket_TCPIP_server
   server_start( int _port );
