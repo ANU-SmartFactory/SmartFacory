@@ -1,0 +1,63 @@
+통신 Protocol
+
+
+main - UI
+
+socket_TCPIP_server
+comm_line : socket_TCPIP_server
+comm_trailer : socket_TCPIP_server
+  
+  
+main_flow - thread
+  eLineState line_state; ( idle, execute, alarm_stop, resume )
+  sequence()
+  idle()
+  execute()
+  alarm_stop()
+  resume()
+  
+  
+machineIF
+  on_receive()
+  eCommState get_comm_state() ( wait_recv, recv_complete )
+  eMachineState get_machine_state( ref double _data ) ( normal, abnormal )
+	
+machine_input : machineIF
+machine_manufacture : machineIF
+machine_assemble : machineIF
+machine_test : machineIF
+machine_output : machineIF
+    
+	
+trailer
+  on_receive()
+  start()
+  stop()
+  go_back()
+  int get_weight()
+  
+  
+  
+  
+  
+  
+ -- arduino trailer --
+socket_TCPIP_client
+comm_mes : socket_TCPIP_client
+  on_receive()
+  send_data( string _data )
+
+main_flow - thread
+  sequence()
+
+motor
+  move()
+  stop()
+
+load_cell
+  get_weight()
+
+  
+  
+  
+  
