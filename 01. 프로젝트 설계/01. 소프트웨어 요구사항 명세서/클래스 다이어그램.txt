@@ -10,23 +10,79 @@ comm_trailer : socket_TCPIP_server
   
 main_flow - thread
   eLineState line_state; ( idle, execute, alarm_stop, resume )
-  sequence()
+  
+  sequence(){
+    switch( line_state ){
+      case idle : idle(); break;
+      case execute : execute(); break;
+      case alarm_stop : alarm_stop(); break;
+      case resume : resume(); break;
+    }
+  }
+  
   idle()
-  execute()
+  execute(){
+    switch( step ){
+      case 0 :{
+        trailer.start();
+	step = 1;
+      }break;
+      case 1 : {
+        if( machine_input.get_sensor_detect() == true ){
+	  trailer.stop();
+	  step = 10;
+	}
+      }break;
+      case 10 :{
+        if( machine_input.get_machine_state() == eMachineState::abnormal ){
+	  trailer.go_back();
+	  break;
+	}else{
+	  //...
+	}
+      }break;
+    }
+  }
   alarm_stop()
   resume()
   
   
 machineIF
+  enum eMachineState{
+    normal = 0,
+    abnormal = 1,
+  }
+
   on_receive()
-  eCommState get_comm_state() ( wait_recv, recv_complete )
-  eMachineState get_machine_state( ref double _data ) ( normal, abnormal )
+  eCommState get_comm_state()                               //( wait_recv, recv_complete )
+  eMachineState get_machine_state( ref double _data )       //( normal, abnormal )
+  bool get_sensor_detect()
 	
 machine_input : machineIF
+  변수 기준값;
+  on_receive()
+  get_machine_state(){
+    if( 기준값 > recv_data ){
+      alarm;
+    }
+  }
+  
 machine_manufacture : machineIF
+  변수 기준값;
+  on_receive()
+  
 machine_assemble : machineIF
+  변수 기준값;
+  on_receive()
+  
 machine_test : machineIF
+  변수 기준값;
+  on_receive()
+  
 machine_output : machineIF
+  변수 기준값;
+  on_receive()
+  
     
 	
 trailer
@@ -38,7 +94,18 @@ trailer
   
   
   
-  
+ -- arduino line --
+ main thread
+ 
+ input thread
+ manufacture thread
+ assemble thread
+ ...
+ 
+ MES         arduino line
+       <-    1sensor_on_off/2sensor_on_off,data/3sensor_on_off,data/4sensor_on_off,data/5sensor_on_off
+             1/0,123/0,12/0,333/0
+	     0/1,333/0,12/0,333/0
   
   
  -- arduino trailer --
@@ -47,7 +114,7 @@ comm_mes : socket_TCPIP_client
   on_receive()
   send_data( string _data )
 
-main_flow - thread
+main_flow
   sequence()
 
 motor
